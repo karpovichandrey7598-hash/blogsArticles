@@ -27,6 +27,32 @@ def create_application() -> Flask:
     with app.app_context():
         from platform_app.core.database import db
         db.create_all()
+        
+        # Додаємо нові колонки для ШІ, якщо їх немає (міграція)
+        try:
+            from sqlalchemy import inspect, text
+            inspector = inspect(db.engine)
+            
+            # Перевіряємо, чи існує таблиця
+            if 'blog_posts' in inspector.get_table_names():
+                columns = [col['name'] for col in inspector.get_columns('blog_posts')]
+                
+                if 'ai_summary' not in columns:
+                    db.session.execute(text("ALTER TABLE blog_posts ADD COLUMN ai_summary TEXT"))
+                    print("✓ Додано колонку ai_summary")
+                
+                if 'ai_generated' not in columns:
+                    db.session.execute(text("ALTER TABLE blog_posts ADD COLUMN ai_generated BOOLEAN DEFAULT FALSE"))
+                    print("✓ Додано колонку ai_generated")
+                
+                db.session.commit()
+        except Exception as e:
+            # Якщо таблиця ще не існує або інша помилка - ігноруємо
+            print(f"Міграція (можливо таблиця ще не створена): {e}")
+            try:
+                db.session.rollback()
+            except:
+                pass
     
     return app
 
