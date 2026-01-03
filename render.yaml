@@ -3,8 +3,9 @@ services:
     name: blog-platform
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn "run:application"
+    pythonVersion: "3.11"
     envVars:
       - key: FLASK_ENV
         value: production
