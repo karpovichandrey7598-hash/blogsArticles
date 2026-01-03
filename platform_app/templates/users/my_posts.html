@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Мої пости{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Мої публікації</h1>
+        <a href="{{ url_for('posts.show_create') }}" class="btn btn--primary btn--small">+ Створити новий пост</a>
+    </div>
+
+    {% if posts %}
+        <div class="posts-grid">
+            {% for post in posts %}
+                <div class="post-card" style="position: relative;">
+                    <a href="{{ url_for('posts.view_post', slug=post.slug) }}" style="text-decoration: none; color: inherit;">
+                        <h2 class="post-card-title">{{ post.title }}</h2>
+                        {% if post.summary %}
+                            <p class="post-card-summary">{{ post.summary }}</p>
+                        {% endif %}
+                        <div class="post-card-meta">
+                            <span>📅 {{ post.published_at.strftime('%d.%m.%Y') }}</span>
+                            <span>👁️ {{ post.view_count }}</span>
+                            <span>{% if post.is_published %}✅ Опубліковано{% else %}⏸️ Чернетка{% endif %}</span>
+                        </div>
+                    </a>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <a href="{{ url_for('posts.show_edit', slug=post.slug) }}" class="btn btn--outline btn--small">Редагувати</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center">
+            <p class="text-muted mb-2">У вас поки що немає постів</p>
+            <a href="{{ url_for('posts.show_create') }}" class="btn btn--primary">Створити перший пост</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

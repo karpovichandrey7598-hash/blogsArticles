@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Всі пости{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Всі публікації</h1>
+        <form method="GET" action="{{ url_for('posts.list_posts') }}" style="margin-top: 16px;">
+            <input type="text" name="q" value="{{ search_query }}" class="form-input" placeholder="Пошук по заголовку або тексту..." style="max-width: 400px;">
+            <button type="submit" class="btn btn--primary btn--small">Шукати</button>
+        </form>
+    </div>
+
+    {% if posts.items %}
+        <div class="posts-grid">
+            {% for post in posts.items %}
+                <a href="{{ url_for('posts.view_post', slug=post.slug) }}" class="post-card">
+                    <h2 class="post-card-title">{{ post.title }}</h2>
+                    {% if post.summary %}
+                        <p class="post-card-summary">{{ post.summary }}</p>
+                    {% else %}
+                        <p class="post-card-summary">{{ post.content[:150] }}...</p>
+                    {% endif %}
+                    <div class="post-card-meta">
+                        <span>👤 {{ post.author.get_display_name() }}</span>
+                        <span>📅 {{ post.published_at.strftime('%d.%m.%Y') }}</span>
+                        <span>👁️ {{ post.view_count }}</span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+
+        {% if posts.pages > 1 %}
+            <div class="pagination">
+                {% if posts.has_prev %}
+                    <a href="{{ url_for('posts.list_posts', page=posts.prev_num, q=search_query) }}" class="pagination-link">← Попередня</a>
+                {% endif %}
+                
+                {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <a href="{{ url_for('posts.list_posts', page=page_num, q=search_query) }}" 
+                           class="pagination-link {% if page_num == posts.page %}active{% endif %}">
+                            {{ page_num }}
+                        </a>
+                    {% else %}
+                        <span class="pagination-link">...</span>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if posts.has_next %}
+                    <a href="{{ url_for('posts.list_posts', page=posts.next_num, q=search_query) }}" class="pagination-link">Наступна →</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="text-center">
+            <p class="text-muted">Пости не знайдено</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

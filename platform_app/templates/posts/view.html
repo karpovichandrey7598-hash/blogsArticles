@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="post-header">
+        <h1 class="post-title">{{ post.title }}</h1>
+        <div class="post-meta">
+            <span>👤 <a href="{{ url_for('users.view_profile', username=post.author.username) }}">{{ post.author.get_display_name() }}</a></span>
+            <span>📅 {{ post.published_at.strftime('%d.%m.%Y о %H:%M') }}</span>
+            <span>👁️ {{ post.view_count }} переглядів</span>
+        </div>
+    </div>
+
+    <div class="post-content">
+        {{ post.content }}
+    </div>
+
+    {% if post.get_tags_list() %}
+        <div class="post-tags">
+            {% for tag in post.get_tags_list() %}
+                <span class="tag">#{{ tag }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if current_user.is_authenticated and current_user.id == post.author_id %}
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+            <a href="{{ url_for('posts.show_edit', slug=post.slug) }}" class="btn btn--outline">Редагувати</a>
+            <form method="POST" action="{{ url_for('posts.process_delete', slug=post.slug) }}" style="display: inline;" onsubmit="return confirm('Ви впевнені, що хочете видалити цей пост?');">
+                <button type="submit" class="btn btn--danger">Видалити</button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+
+<div class="text-center">
+    <a href="{{ url_for('posts.list_posts') }}" class="btn btn--outline">← Назад до списку</a>
+</div>
+{% endblock %}
+

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Платформа для блогів{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="{{ url_for('main.home') }}" class="logo">
+                    <span class="logo-icon">✍️</span>
+                    <span class="logo-text">BlogPlatform</span>
+                </a>
+                
+                <nav class="main-nav">
+                    <a href="{{ url_for('main.home') }}" class="nav-link">Головна</a>
+                    <a href="{{ url_for('posts.list_posts') }}" class="nav-link">Всі пости</a>
+                    
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('posts.show_create') }}" class="nav-link nav-link--highlight">+ Створити пост</a>
+                        <a href="{{ url_for('users.view_profile', username=current_user.username) }}" class="nav-link">{{ current_user.get_display_name() }}</a>
+                        <form method="POST" action="{{ url_for('auth.process_logout') }}" class="inline-form">
+                            <button type="submit" class="btn btn--text">Вихід</button>
+                        </form>
+                    {% else %}
+                        <a href="{{ url_for('auth.show_login') }}" class="nav-link">Вхід</a>
+                        <a href="{{ url_for('auth.show_register') }}" class="btn btn--primary btn--small">Реєстрація</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <div class="messages">
+                        {% for category, message in messages %}
+                            <div class="message message--{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p class="footer-text">
+                Платформа для блогів • Flask + PostgreSQL • Лабораторна робота №1
+            </p>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+

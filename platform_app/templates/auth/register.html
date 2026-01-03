@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Реєстрація{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 480px; margin: 0 auto;">
+    <div class="card-header">
+        <h1 class="card-title">Створення акаунта</h1>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.process_register') }}">
+        <div class="form-group">
+            <label class="form-label">Ім'я користувача *</label>
+            <input type="text" name="username" class="form-input" required minlength="3" autofocus>
+            <p class="form-help">Мінімум 3 символи</p>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input type="email" name="email" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Повне ім'я</label>
+            <input type="text" name="full_name" class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Пароль *</label>
+            <input type="password" name="password" class="form-input" required minlength="6">
+            <p class="form-help">Мінімум 6 символів</p>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Підтвердження пароля *</label>
+            <input type="password" name="password_confirm" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn--primary" style="width: 100%;">Зареєструватися</button>
+        </div>
+
+        <div class="text-center">
+            <p class="text-muted">Вже маєте акаунт? <a href="{{ url_for('auth.show_login') }}">Увійти</a></p>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

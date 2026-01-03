@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Профіль: {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">{{ user.get_display_name() }}</h1>
+        <p class="card-subtitle">@{{ user.username }}</p>
+    </div>
+
+    {% if user.about %}
+        <div style="margin-bottom: 24px;">
+            <p>{{ user.about }}</p>
+        </div>
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div>
+            <strong>Зареєстровано:</strong><br>
+            <span class="text-muted">{{ user.registered_at.strftime('%d.%m.%Y') }}</span>
+        </div>
+        <div>
+            <strong>Постів:</strong><br>
+            <span class="text-muted">{{ posts|length }}</span>
+        </div>
+        <div>
+            <strong>Переглядів:</strong><br>
+            <span class="text-muted">{{ total_views }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Публікації автора</h2>
+    
+    {% if posts %}
+        <div class="posts-grid">
+            {% for post in posts %}
+                <a href="{{ url_for('posts.view_post', slug=post.slug) }}" class="post-card">
+                    <h2 class="post-card-title">{{ post.title }}</h2>
+                    {% if post.summary %}
+                        <p class="post-card-summary">{{ post.summary }}</p>
+                    {% endif %}
+                    <div class="post-card-meta">
+                        <span>📅 {{ post.published_at.strftime('%d.%m.%Y') }}</span>
+                        <span>👁️ {{ post.view_count }}</span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted text-center">У цього автора поки що немає публікацій</p>
+    {% endif %}
+</div>
+{% endblock %}
+

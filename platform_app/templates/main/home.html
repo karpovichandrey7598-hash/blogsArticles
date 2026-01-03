@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Останні публікації</h1>
+        <p class="card-subtitle">Найновіші пости на платформі</p>
+    </div>
+
+    {% if posts %}
+        <div class="posts-grid">
+            {% for post in posts %}
+                <a href="{{ url_for('posts.view_post', slug=post.slug) }}" class="post-card">
+                    <h2 class="post-card-title">{{ post.title }}</h2>
+                    {% if post.summary %}
+                        <p class="post-card-summary">{{ post.summary }}</p>
+                    {% else %}
+                        <p class="post-card-summary">{{ post.content[:150] }}...</p>
+                    {% endif %}
+                    <div class="post-card-meta">
+                        <span>👤 {{ post.author.get_display_name() }}</span>
+                        <span>📅 {{ post.published_at.strftime('%d.%m.%Y') }}</span>
+                        <span>👁️ {{ post.view_count }}</span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{{ url_for('posts.list_posts') }}" class="btn btn--primary">Переглянути всі пости</a>
+        </div>
+    {% else %}
+        <div class="text-center">
+            <p class="text-muted mb-2">Поки що немає публікацій</p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('posts.show_create') }}" class="btn btn--primary">Створити перший пост</a>
+            {% else %}
+                <a href="{{ url_for('auth.show_register') }}" class="btn btn--primary">Зареєструватися</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

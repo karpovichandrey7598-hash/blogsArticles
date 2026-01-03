@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Створити пост{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div class="card-header">
+        <h1 class="card-title">Створити новий пост</h1>
+    </div>
+
+    <form method="POST" action="{{ url_for('posts.process_create') }}">
+        <div class="form-group">
+            <label class="form-label">Заголовок *</label>
+            <input type="text" name="title" class="form-input" required minlength="5" maxlength="300" autofocus>
+            <p class="form-help">Мінімум 5 символів</p>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Короткий опис (превью)</label>
+            <textarea name="summary" class="form-textarea" rows="3" maxlength="500"></textarea>
+            <p class="form-help">Це буде показано в списку постів</p>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Текст поста *</label>
+            <textarea name="content" class="form-textarea" rows="15" required minlength="100"></textarea>
+            <p class="form-help">Мінімум 100 символів</p>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Теги (через кому)</label>
+            <input type="text" name="tags" class="form-input" placeholder="наприклад: технології, програмування, python">
+            <p class="form-help">Розділіть теги комами</p>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn--primary">Опублікувати</button>
+            <a href="{{ url_for('main.home') }}" class="btn btn--outline">Скасувати</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

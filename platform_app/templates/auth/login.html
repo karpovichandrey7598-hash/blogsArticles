@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Вхід{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 480px; margin: 0 auto;">
+    <div class="card-header">
+        <h1 class="card-title">Вхід до системи</h1>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.process_login') }}">
+        <div class="form-group">
+            <label class="form-label">Ім'я користувача</label>
+            <input type="text" name="username" class="form-input" required autofocus>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Пароль</label>
+            <input type="password" name="password" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn--primary" style="width: 100%;">Увійти</button>
+        </div>
+
+        <div class="text-center">
+            <p class="text-muted">Немає акаунта? <a href="{{ url_for('auth.show_register') }}">Зареєструватися</a></p>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

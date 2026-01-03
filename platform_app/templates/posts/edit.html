@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Редагувати пост{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div class="card-header">
+        <h1 class="card-title">Редагувати пост</h1>
+    </div>
+
+    <form method="POST" action="{{ url_for('posts.process_edit', slug=post.slug) }}">
+        <div class="form-group">
+            <label class="form-label">Заголовок *</label>
+            <input type="text" name="title" class="form-input" value="{{ post.title }}" required minlength="5" maxlength="300">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Короткий опис (превью)</label>
+            <textarea name="summary" class="form-textarea" rows="3">{{ post.summary or '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Текст поста *</label>
+            <textarea name="content" class="form-textarea" rows="15" required minlength="100">{{ post.content }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Теги (через кому)</label>
+            <input type="text" name="tags" class="form-input" value="{{ post.tags or '' }}" placeholder="наприклад: технології, програмування">
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn--primary">Зберегти зміни</button>
+            <a href="{{ url_for('posts.view_post', slug=post.slug) }}" class="btn btn--outline">Скасувати</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
