@@ -9,6 +9,7 @@ from platform_app.models.post import BlogPost
 from platform_app.models.user import UserAccount
 from platform_app.core.database import db
 from platform_app.core.config import AppConfig
+from sqlalchemy import func
 
 posts_bp = Blueprint("posts", __name__)
 
@@ -64,6 +65,7 @@ def process_create():
     content = request.form.get("content", "").strip()
     summary = request.form.get("summary", "").strip() or None
     tags = request.form.get("tags", "").strip() or None
+    use_ai = request.form.get("use_ai") == "on"  # Чекбокс для використання ШІ
     
     if not title or len(title) < 5:
         flash("Заголовок має бути мінімум 5 символів", "error")
@@ -72,6 +74,19 @@ def process_create():
     if not content or len(content) < 100:
         flash("Текст поста має бути мінімум 100 символів", "error")
         return redirect(url_for("posts.show_create"))
+    
+    # Генерація резюме за допомогою ШІ, якщо не вказано вручну
+    ai_summary = None
+    ai_generated = False
+    if use_ai and not summary and len(content) > 200:
+        try:
+            from platform_app.ai.summarizer import summarize_text
+            ai_summary = summarize_text(content, max_length=200, min_length=50)
+            if ai_summary:
+                summary = ai_summary
+                ai_generated = True
+        except Exception as e:
+            print(f"AI summarization error: {e}")
     
     slug = BlogPost.generate_slug(title)
     
@@ -86,13 +101,19 @@ def process_create():
         content=content,
         summary=summary,
         tags=tags,
-        author_id=current_user.id
+        author_id=current_user.id,
+        ai_summary=ai_summary,
+        ai_generated=ai_generated
     )
     
     db.session.add(new_post)
     db.session.commit()
     
-    flash("Пост успішно створено!", "success")
+    if ai_generated:
+        flash("Пост успішно створено! Резюме згенеровано за допомогою ШІ.", "success")
+    else:
+        flash("Пост успішно створено!", "success")
+    
     return redirect(url_for("posts.view_post", slug=new_post.slug))
 
 

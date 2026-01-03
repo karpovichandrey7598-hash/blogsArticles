@@ -22,6 +22,7 @@
                     
                     {% if current_user.is_authenticated %}
                         <a href="{{ url_for('posts.show_create') }}" class="nav-link nav-link--highlight">+ Створити пост</a>
+                        <a href="{{ url_for('stats.dashboard') }}" class="nav-link">Статистика</a>
                         <a href="{{ url_for('users.view_profile', username=current_user.username) }}" class="nav-link">{{ current_user.get_display_name() }}</a>
                         <form method="POST" action="{{ url_for('auth.process_logout') }}" class="inline-form">
                             <button type="submit" class="btn btn--text">Вихід</button>

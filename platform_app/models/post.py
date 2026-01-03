@@ -32,6 +32,10 @@ class BlogPost(db.Model):
     tags = db.Column(db.String(500), nullable=True)  # Через кому
     featured_image = db.Column(db.String(500), nullable=True)
     
+    # ШІ генерація
+    ai_summary = db.Column(db.Text, nullable=True)  # Резюме, згенероване ШІ
+    ai_generated = db.Column(db.Boolean, default=False, nullable=False)  # Чи використано ШІ
+    
     def __repr__(self) -> str:
         return f"<BlogPost {self.slug}>"
     

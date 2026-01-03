@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Глобальна статистика{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="card-title">Статистика платформи</h1>
+    <p class="card-subtitle">Загальна інформація про платформу</p>
+</div>
+
+<div class="card">
+    <h2>Загальні показники</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+        <div style="text-align: center; padding: 20px; background: var(--bg-dark); border-radius: var(--radius);">
+            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">{{ total_users }}</div>
+            <div style="color: var(--text-light); margin-top: 8px;">Користувачів</div>
+        </div>
+        <div style="text-align: center; padding: 20px; background: var(--bg-dark); border-radius: var(--radius);">
+            <div style="font-size: 32px; font-weight: 700; color: var(--secondary);">{{ total_posts }}</div>
+            <div style="color: var(--text-light); margin-top: 8px;">Постів</div>
+        </div>
+        <div style="text-align: center; padding: 20px; background: var(--bg-dark); border-radius: var(--radius);">
+            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">{{ total_views }}</div>
+            <div style="color: var(--text-light); margin-top: 8px;">Переглядів</div>
+        </div>
+        <div style="text-align: center; padding: 20px; background: var(--bg-dark); border-radius: var(--radius);">
+            <div style="font-size: 32px; font-weight: 700; color: var(--secondary);">{{ ai_posts }}</div>
+            <div style="color: var(--text-light); margin-top: 8px;">Постів з ШІ</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Найпопулярніші пости</h2>
+    {% if popular_posts %}
+        <div style="margin-top: 16px;">
+            {% for post in popular_posts %}
+                <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+                    <a href="{{ url_for('posts.view_post', slug=post.slug) }}" style="font-weight: 600;">{{ post.title }}</a>
+                    <div style="color: var(--text-light); font-size: 14px; margin-top: 4px;">
+                        Автор: <a href="{{ url_for('users.view_profile', username=post.author.username) }}">{{ post.author.get_display_name() }}</a> • 
+                        {{ post.view_count }} переглядів • {{ post.published_at.strftime('%d.%m.%Y') }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">Поки що немає постів</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Найактивніші автори</h2>
+    {% if active_authors %}
+        <div style="margin-top: 16px;">
+            {% for user, post_count, total_views in active_authors %}
+                <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+                    <a href="{{ url_for('users.view_profile', username=user.username) }}" style="font-weight: 600;">{{ user.get_display_name() }}</a>
+                    <div style="color: var(--text-light); font-size: 14px; margin-top: 4px;">
+                        {{ post_count }} постів • {{ total_views or 0 }} переглядів
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">Поки що немає активних авторів</p>
+    {% endif %}
+</div>
+{% endblock %}
+
