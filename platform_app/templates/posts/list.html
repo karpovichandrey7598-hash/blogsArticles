@@ -18,7 +18,12 @@
                 <a href="{{ url_for('posts.view_post', slug=post.slug) }}" class="post-card">
                     <h2 class="post-card-title">{{ post.title }}</h2>
                     {% if post.summary %}
-                        <p class="post-card-summary">{{ post.summary }}</p>
+                        <p class="post-card-summary">
+                            {{ post.summary }}
+                            {% if post.ai_generated %}
+                                <span style="font-size: 11px; color: var(--primary); margin-left: 4px;">🤖</span>
+                            {% endif %}
+                        </p>
                     {% else %}
                         <p class="post-card-summary">{{ post.content[:150] }}...</p>
                     {% endif %}

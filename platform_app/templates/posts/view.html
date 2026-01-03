@@ -13,6 +13,18 @@
         </div>
     </div>
 
+    {% if post.summary %}
+        <div style="padding: 16px; background: var(--bg-dark); border-left: 4px solid var(--primary); border-radius: var(--radius); margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <strong style="color: var(--text);">Короткий опис:</strong>
+                {% if post.ai_generated %}
+                    <span style="font-size: 12px; padding: 2px 8px; background: var(--primary); color: white; border-radius: 12px;">🤖 ШІ</span>
+                {% endif %}
+            </div>
+            <p style="color: var(--text-light); margin: 0; line-height: 1.6;">{{ post.summary }}</p>
+        </div>
+    {% endif %}
+
     <div class="post-content">
         {{ post.content }}
     </div>
