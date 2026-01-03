@@ -3,7 +3,7 @@ Blueprint для статистики та візуалізації
 """
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-from sqlalchemy import func, coalesce
+from sqlalchemy import func
 from datetime import datetime, timedelta
 
 from platform_app.models.post import BlogPost
